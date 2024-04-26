@@ -27,7 +27,7 @@ export default function WOMGainedFetch({ playerName }: Prop) {
       )
         .then((response) => {
           if (!response.ok) {
-            throw new Error("blase");
+            throw new Error("Fetch Error! Code: " + response.status);
           } else {
             fetchSuccess.current = true;
             return response.json();
@@ -36,7 +36,10 @@ export default function WOMGainedFetch({ playerName }: Prop) {
         .then((jsonres: IWOMGainedJSON) => {
           for (const s in jsonres.data.skills) {
             const currentSkill = jsonres.data.skills[s];
-            if (currentSkill.experience.gained != 0) {
+            if (
+              currentSkill.metric == "overall" ||
+              currentSkill.experience.gained != 0
+            ) {
               const skill = currentSkill;
               rowsArray.push(
                 <WOMGainedTableRow
