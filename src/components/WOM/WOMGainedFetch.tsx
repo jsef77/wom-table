@@ -1,6 +1,8 @@
-import { useEffect, useState, ReactNode } from "react";
+import { useLayoutEffect, useState, ReactNode, useRef } from "react";
 import WOMGainedTableRow from "./WOMGainedTableRow";
 import { IWOMGainedJSON } from "./WOM";
+import { Alert } from "@mui/joy";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 
 interface Prop {
   playerName: string;
@@ -8,14 +10,29 @@ interface Prop {
 
 export default function WOMGainedFetch({ playerName }: Prop) {
   const [tableRowArray, setTableRowArray] = useState(Array<ReactNode>);
+  const firstUpdate = useRef(true);
+  const fetchSuccess = useRef(true);
 
-  useEffect(() => {
-    const rowsArray: ReactNode[] = [];
+  useLayoutEffect(() => {
+    if (!firstUpdate.current && playerName != "") {
+      awaitWOM();
+    } else {
+      firstUpdate.current = false;
+    }
+
     async function awaitWOM() {
+      const rowsArray: ReactNode[] = [];
       await fetch(
         `https://api.wiseoldman.net/v2/players/${playerName}/gained?period=week`
       )
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("blase");
+          } else {
+            fetchSuccess.current = true;
+            return response.json();
+          }
+        })
         .then((jsonres: IWOMGainedJSON) => {
           for (const s in jsonres.data.skills) {
             const currentSkill = jsonres.data.skills[s];
@@ -32,14 +49,26 @@ export default function WOMGainedFetch({ playerName }: Prop) {
             }
           }
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((err) => {
+          console.log(err);
+          fetchSuccess.current = false;
         });
+
       setTableRowArray(rowsArray);
     }
-    awaitWOM();
-    console.log(playerName);
   }, [playerName]);
 
-  return <>{tableRowArray}</>;
+  if (!fetchSuccess.current) {
+    return (
+      <Alert
+        variant="outlined"
+        color="danger"
+        startDecorator={<AccountCircleRoundedIcon />}
+      >
+        Player Not Found!
+      </Alert>
+    );
+  } else {
+    return <>{tableRowArray}</>;
+  }
 }
