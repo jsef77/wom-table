@@ -1,11 +1,28 @@
-import { Table, Sheet, Input } from "@mui/joy";
+import { Table, Sheet, Input, Stack, Button } from "@mui/joy";
 import WOMGainedFetch from "./WOMGainedFetch";
+import { SyntheticEvent, useState } from "react";
 
 function WOMGainedWeeklyTable() {
+  const [inputValue, setInputValue] = useState("");
+
   return (
     <>
       <Sheet>
-        <Input placeholder="Player Name..." />
+        <form
+          onSubmit={(event: SyntheticEvent) => {
+            event.preventDefault(); // stops page reload
+            const input = event.target[0] as HTMLFormElement;
+            setInputValue(input.value);
+          }}
+        >
+          <Stack spacing={1}>
+            <Input
+              placeholder="Player name..."
+              required
+              endDecorator={<Button type="submit">Track</Button>}
+            />
+          </Stack>
+        </form>
         <Table
           stripe="odd"
           size="sm"
@@ -22,7 +39,7 @@ function WOMGainedWeeklyTable() {
             </tr>
           </thead>
           <tbody>
-            <WOMGainedFetch />
+            <WOMGainedFetch playerName={inputValue} />
           </tbody>
         </Table>
       </Sheet>

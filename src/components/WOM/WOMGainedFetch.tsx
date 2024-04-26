@@ -2,11 +2,14 @@ import { useEffect, useState, ReactNode } from "react";
 import WOMGainedTableRow from "./WOMGainedTableRow";
 import { IWOMGainedJSON } from "./WOM";
 
-export default function WOM() {
+interface Prop {
+  playerName: string;
+}
+
+export default function WOMGainedFetch({ playerName }: Prop) {
   const [tableRowArray, setTableRowArray] = useState(Array<ReactNode>);
 
   useEffect(() => {
-    const playerName = "Sseff";
     const rowsArray: ReactNode[] = [];
     async function awaitWOM() {
       await fetch(
@@ -35,7 +38,8 @@ export default function WOM() {
       setTableRowArray(rowsArray);
     }
     awaitWOM();
-  }, []);
+    console.log(playerName);
+  }, [playerName]);
 
   return <>{tableRowArray}</>;
 }
