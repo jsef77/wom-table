@@ -1,8 +1,6 @@
 import { useLayoutEffect, useState, ReactNode, useRef } from "react";
 import WOMGainedTableRow from "./WOMGainedTableRow";
 import { IWOMGainedJSON } from "./WOM";
-import { Alert } from "@mui/joy";
-import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 
 interface Prop {
   playerName: string;
@@ -27,6 +25,7 @@ export default function WOMGainedFetch({ playerName }: Prop) {
       )
         .then((response) => {
           if (!response.ok) {
+            fetchSuccess.current = false;
             throw new Error("Fetch Error! Code: " + response.status);
           } else {
             fetchSuccess.current = true;
@@ -63,13 +62,13 @@ export default function WOMGainedFetch({ playerName }: Prop) {
 
   if (!fetchSuccess.current) {
     return (
-      <Alert
-        variant="outlined"
-        color="danger"
-        startDecorator={<AccountCircleRoundedIcon />}
-      >
-        Player Not Found!
-      </Alert>
+      <WOMGainedTableRow
+        key="err"
+        skill="err"
+        gained={0}
+        levels={0}
+        err={true}
+      ></WOMGainedTableRow>
     );
   } else {
     return <>{tableRowArray}</>;

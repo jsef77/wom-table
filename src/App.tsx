@@ -24,7 +24,7 @@ const theme = extendTheme({
 
 function App() {
   return (
-    <CssVarsProvider theme={theme} defaultMode="system">
+    <CssVarsProvider theme={theme} defaultMode="dark">
       <h1>wom-table</h1>
       <p>
         A recreation of <a href="https://wiseoldman.net/">Wise Old Man</a> for

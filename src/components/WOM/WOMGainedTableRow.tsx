@@ -1,22 +1,25 @@
+import { Alert } from "@mui/joy";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+
 interface Prop {
   key: string;
   skill: string;
   gained: number;
   levels: number;
+  err?: boolean;
 }
 
 function formatXP(num: number) {
-  // return (Math.round(xp) / 1000000).toFixed(2);
-  const x = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-  switch (x.length) {
-    case 9:
-      return x.slice(0, 3).replace(",", ".") + "M";
-    case 7:
-      return x.slice(0, 3) + "K";
-    default:
-      return x;
-  }
+  //   switch (x.length) {
+  //     case 9:
+  //       return x.slice(0, 3).replace(",", ".") + "M";
+  //     case 7:
+  //       return x.slice(0, 3) + "K";
+  //     default:
+  //       return x;
+  //   }
 }
 
 function imageFetch(skill: string) {
@@ -24,18 +27,32 @@ function imageFetch(skill: string) {
   return URL;
 }
 
-function WOMGainedTableRow({ skill, gained, levels }: Prop) {
-  return (
-    <tr>
-      <td>
-        <img className="skill-img" title={skill} src={imageFetch(skill)} />
-      </td>
-      <td>
-        <p title={formatXP(gained)}>+ {formatXP(gained)} XP</p>
-      </td>
-      <td>{levels}</td>
-    </tr>
-  );
+function WOMGainedTableRow({ skill, gained, levels, err = false }: Prop) {
+  if (!err) {
+    return (
+      <tr>
+        <td>
+          <img className="skill-img" title={skill} src={imageFetch(skill)} />
+        </td>
+        <td>+ {formatXP(gained)} XP</td>
+        <td>{levels}</td>
+      </tr>
+    );
+  } else if (err) {
+    return (
+      <tr>
+        <td colSpan={3}>
+          <Alert
+            variant="outlined"
+            color="danger"
+            startDecorator={<AccountCircleRoundedIcon />}
+          >
+            Player Not Found!
+          </Alert>
+        </td>
+      </tr>
+    );
+  }
 }
 
 export default WOMGainedTableRow;
