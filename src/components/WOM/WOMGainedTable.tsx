@@ -17,23 +17,15 @@ function WOMGainedWeeklyTable() {
         >
           <Stack spacing={1}>
             <Input
-              placeholder="Player name..."
+              placeholder="Enter a Player Name..."
               required
               endDecorator={<Button type="submit">Track</Button>}
             />
           </Stack>
         </form>
       </Box>
-      <Sheet>
-        <Table
-          stripe="odd"
-          size="sm"
-          sx={{
-            "& tr": { textAlign: "left" },
-            "& thead ": { textAlign: "center" },
-            "& th": { fontSize: "1rem" },
-          }}
-        >
+      <Sheet variant="soft">
+        <Table size="sm" variant="soft" color="primary" hoverRow>
           <thead>
             <tr>
               <th>Skill</th>
